@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Larry_s_Array
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //1 2 3 6 5 9 10 4
+            //1 2 3 6 5 10 4 9
+            //1 2 3 6 5 4 9 10
+            //1 2 3 4 6 5 9 10
+            //1 2 3 5 6 4 9 10
+
+            int nCases = int.Parse(Console.ReadLine());
+
+            for (int nCase = 0; nCase < nCases; nCase++)
+            {
+                int arrSize = int.Parse(Console.ReadLine());
+                int[] arr = Array.ConvertAll(Console.ReadLine().Split(' '), int.Parse);
+
+                int inversionCounter = 0;
+
+                for (int i = 0; i < arrSize-1; i++)
+                {
+                    for (int j = i+1; j < arrSize; j++)
+                    {
+                        if (arr[i] > arr[j])
+                        {
+                            inversionCounter++;
+                        }
+                        
+                    }
+                }
+
+                if(inversionCounter%2==0)
+                {
+                    Console.WriteLine("YES");
+                }
+                else
+                {
+                    Console.WriteLine("NO");
+                }
+            }
+            
+        }
+    }
+}
