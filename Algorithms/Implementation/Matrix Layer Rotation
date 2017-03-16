@@ -1,0 +1,129 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Matrix_Layer_Rotation
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] basicInput = Console.ReadLine().Split(' ');
+
+            int rows = int.Parse(basicInput[0]);
+            int cols = int.Parse(basicInput[1]);
+            int rotations = int.Parse(basicInput[2]);
+
+            int NumberOfCirciles = Math.Min(rows, cols) / 2;
+
+            int firstIndex = 0;
+
+            int[][] initialArr = new int [rows][];
+            for (int row = 0; row < rows; row++)
+            {
+                initialArr[row]= Array.ConvertAll(Console.ReadLine().Split(' '),int.Parse);
+            }
+
+            for (int circle = 1; circle <= NumberOfCirciles; circle++)
+            {
+                int numberOfElements = rows * 2 + (cols - 2) * 2;
+                int numberOfMoves = rotations % numberOfElements;
+
+                //store initial storage
+                if (numberOfMoves > 0)
+                {
+                    int[] tempArray = new int[numberOfElements];
+
+                    #region copy basic data
+
+                    int rowMoves = 0;
+                    int colMoves = 0;
+                    for (int i = 0; i < numberOfElements; i++)
+                    {
+                        tempArray[i] = initialArr[firstIndex + rowMoves][firstIndex + colMoves];
+
+                        if (rowMoves == 0 && colMoves > 0)
+                        {
+                            colMoves--;
+                        }
+                        if (colMoves == cols-1)
+                        {
+                            rowMoves--;
+                        }
+                        if (rowMoves == rows-1)
+                        {
+                            colMoves++;
+                        }
+                        if (colMoves == 0)
+                        {
+                            rowMoves++;
+                        }
+                    }
+
+                    #endregion
+
+                    #region rotate
+
+                    int[] newRotateArr = new int[numberOfElements];
+
+                    for (int i = 0; i < tempArray.Length; i++)
+                    {
+                        int newIndex = (i + numberOfMoves) % tempArray.Length;
+
+
+                        newRotateArr[newIndex] = tempArray[i];
+                    }
+                    
+                    #endregion
+
+                    #region store rotation in inital array
+
+                    rowMoves = 0;
+                    colMoves = 0;
+                    for (int i = 0; i < numberOfElements; i++)
+                    {
+                        initialArr[firstIndex + rowMoves][firstIndex + colMoves] = newRotateArr[i];
+
+                        if (rowMoves == 0 && colMoves > 0)
+                        {
+                            colMoves--;
+                        }
+                        if (colMoves == cols-1)
+                        {
+                            rowMoves--;
+                        }
+                        if (rowMoves == rows-1)
+                        {
+                            colMoves++;
+                        }
+                        if (colMoves == 0)
+                        {
+                            rowMoves++;
+                        }
+
+                    }
+                    
+                    #endregion
+                    
+                }
+
+                firstIndex++;
+                rows-=2;
+                cols-=2;
+            }
+
+            for (int i = 0; i < initialArr.Length; i++)
+            {
+                for (int j = 0; j < initialArr[i].Length; j++)
+                {
+                    Console.Write("{0} ", initialArr[i][j]);
+                }
+                Console.WriteLine();
+            }
+
+            //Console.ReadLine();
+        }
+    }
+}
