@@ -1,3 +1,3 @@
 # HackerRank
 
-My HackerRank solutions
+C# HackerRank solutions
