@@ -1,0 +1,163 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmaSuperComputer
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] tokens_n = Console.ReadLine().Split(' ');
+            int n = Convert.ToInt32(tokens_n[0]);
+            int m = Convert.ToInt32(tokens_n[1]);
+
+            char[][] grid = new char[n][];
+
+            for (int line = 0; line < n; line++)
+            {
+                grid[line] = Console.ReadLine().Replace(" ", "").ToCharArray();
+            }
+
+            int maxProduct=0;
+            int goodPointCounter = 0;
+
+            var gp = new List<GoodPlus>();
+
+            for (int line = 1; line < n-1; line++)
+            {
+                for (int col = 1; col < m - 1; col++)
+                {
+                    if (grid[line][col] == 'G')
+                    {
+                        goodPointCounter++;
+
+                        if(goodPointCounter ==2)
+                        {
+                            maxProduct = 1;
+                        }
+                        
+                        int d1 = Math.Min(line, n - line-1);
+                        int d2 = Math.Min(col, m - col - 1);
+                        int d = Math.Min(d1, d2);
+
+                        for (int i = 1; i <= d; i++)
+                        {
+                            if (grid[line - i][col] == 'G' &&
+                                grid[line + i][col] == 'G' &&
+                                grid[line][col - i] == 'G' &&
+                                grid[line][col + i] == 'G')
+                            {
+                                var newGP = new GoodPlus(i, line, col);
+                                gp.Add(newGP);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        } 
+                        
+                    }
+                }
+            }
+
+            foreach (var gpCurrent in gp)
+            {
+                if (maxProduct < gpCurrent.Size * 4 + 1)
+                {
+                    maxProduct = gpCurrent.Size*4+1;
+                }
+                foreach (var gpNext in gp)
+                {
+                    if(!gpCurrent.IsCrossing(gpNext))
+                    {
+                        int tempProduct = (gpCurrent.Size * 4 + 1) * (gpNext.Size * 4 + 1);
+
+                        if (maxProduct < tempProduct)
+                        {
+                            maxProduct = tempProduct;
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine(maxProduct);
+            Console.ReadLine();
+        }
+    }
+
+    class GoodPlus
+    {
+        public int LineIndex, ColIndex,Size;
+
+        public GoodPlus(int size,int lineIndex,int colIndex)
+        {
+            Size = size;
+            LineIndex = lineIndex;
+            ColIndex = colIndex;
+        }
+
+        public bool IsCrossing(GoodPlus nextGP)
+        {
+            bool isCrossing = false;
+
+            string strTemp;
+            var nodelist = new List<string>();
+
+            int currentMinLine, currentMaxLine, currentMinCol, currentMaxCol,
+                nextMinLine, nextMaxLine, nextMinCol, nextMaxCol;
+
+            currentMinLine = LineIndex - Size;
+            currentMaxLine = LineIndex + Size;
+            currentMinCol = ColIndex - Size;
+            currentMaxCol = ColIndex + Size;
+
+            nextMinLine = nextGP.LineIndex - nextGP.Size;
+            nextMaxLine = nextGP.LineIndex + nextGP.Size;
+            nextMinCol = nextGP.ColIndex - nextGP.Size;
+            nextMaxCol = nextGP.ColIndex + nextGP.Size;
+
+            //list nodes in current GP
+            for (int i = currentMinLine; i <= currentMaxLine; i++)
+            {
+                strTemp = i + " " + ColIndex;
+                nodelist.Add(strTemp);
+            }
+            for (int i = currentMinCol; i <= currentMaxCol; i++)
+            {
+                strTemp = LineIndex + " " + i;
+                nodelist.Add(strTemp);
+            }
+
+            for (int i = nextMinLine; i <= nextMaxLine; i++)
+            {
+                strTemp = i + " " + nextGP.ColIndex;
+                if (nodelist.Contains(strTemp))
+                {
+                    isCrossing = true;
+                    break;
+                }
+            }
+
+            if (!isCrossing)
+            {
+                for (int i = nextMinCol; i <= nextMaxCol; i++)
+                {
+                    strTemp = nextGP.LineIndex + " " + i;
+
+                    if (nodelist.Contains(strTemp))
+                    {
+                        isCrossing = true;
+                        break;
+                    }
+                }
+                    
+            }
+            
+            //check if nodes in next GP exist in list
+            return isCrossing;
+        }
+    }
+}
