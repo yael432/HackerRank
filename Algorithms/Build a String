@@ -1,0 +1,299 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Build_a_String
+{
+    class suffix : IComparable<suffix> //IComparer<suffix>
+    {
+        public int index { get; set; }  // To store original index
+        public int[] rank { get; set; } // To store ranks and next rank pair
+
+        public suffix()
+        {
+            rank = new int[2];
+        }
+
+
+        public int CompareTo(suffix other)
+        {
+            //suffix b = (suffix)other;
+            if (this.rank[0] == other.rank[0])
+            {
+                if (this.rank[1] < other.rank[1])
+                {
+                    return -1;
+                }
+                else if (this.rank[1] == other.rank[1])
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                if (this.rank[0] < other.rank[0])
+                {
+                    return -1;
+                }
+                else if (this.rank[0] == other.rank[0])
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            //return (rank[0] == other.rank[0]) ? (rank[1] < other.rank[1] ? 1 : 0) :
+            //       (rank[0] < other.rank[0] ? 1 : 0);
+        }
+    };
+
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            int nCases = int.Parse(Console.ReadLine());
+
+            for (int nCase = 0; nCase < nCases; nCase++)
+            {
+                long[] NAB = Array.ConvertAll(Console.ReadLine().Split(' '), long.Parse);
+                //long N = NAB[0];
+                
+                long A = NAB[1];
+                long B = NAB[2];
+
+                string sFinal = Console.ReadLine();
+                int N = sFinal.Length;
+
+                int[] suffixArr = Program.buildSuffixArray(sFinal, N);
+                int[] lcp = Program.kasai(sFinal, suffixArr);
+                int[] indexToSufficRank = new int[N];
+
+                for (int i = 0; i < N; i++)
+                {
+                    indexToSufficRank[suffixArr[i]] = i;
+                }
+
+                int[] maxCopyLength = new int[N];
+
+                for (int i = 1; i < N; i++)
+                {
+                    int suffixRank = indexToSufficRank[i];
+
+                    int lcpI = lcp[suffixRank];
+                    int nextSuffixRank = suffixRank+1;
+                    while (lcpI > 0)
+                    {
+                        if (suffixArr[nextSuffixRank] < i)
+                        {
+                            int maxCopy = Math.Min(lcpI, i - suffixArr[nextSuffixRank]);
+                            maxCopyLength[i] = Math.Max(maxCopyLength[i], maxCopy);
+                            //break;
+                        }
+
+                        lcpI = Math.Min(lcpI, lcp[nextSuffixRank]);
+                        nextSuffixRank++;
+                    }
+
+                    
+                    nextSuffixRank = suffixRank-1;
+
+                    if (nextSuffixRank >= 0)
+                    {
+                        lcpI = lcp[nextSuffixRank];
+                        
+                        if (lcpI < maxCopyLength[i]) continue;
+                        
+                        while (lcpI > 0 & nextSuffixRank >= 0)
+                        {
+                            if (suffixArr[nextSuffixRank] < i)
+                            {
+                                int maxCopy = Math.Min(lcpI, i - suffixArr[nextSuffixRank]);
+                                maxCopyLength[i] = Math.Max(maxCopyLength[i], maxCopy);
+                                //break;
+                            }
+                            nextSuffixRank--;
+                            if (nextSuffixRank < 0) break;
+
+                            lcpI = Math.Min(lcpI,lcp[nextSuffixRank]);
+                        }
+                    }
+                    
+                }
+
+                //relax prices
+                //double totalPrice = A;
+                long[] priceToIndex = new long[N];
+                for (int i = 1; i < N; i++)
+                {
+                    priceToIndex[i] = long.MaxValue;
+                }
+                priceToIndex[0] = A;
+
+                for (int i = 1; i < N; i++)
+                {
+                    if (priceToIndex[i] > priceToIndex[i - 1] + A)
+                    {
+                        priceToIndex[i] = priceToIndex[i - 1] + A;
+                    }
+
+                    for (int j = 0; j < maxCopyLength[i]; j++)
+                    {
+                        if (i+j>=N)
+                        {
+                            break;
+                        }
+                        if(priceToIndex[i+j] >priceToIndex[i-1] + B )
+                        {
+                            priceToIndex[i+j] = priceToIndex[i - 1] +   B;
+                        }
+
+                    }
+                }
+
+                Console.WriteLine(priceToIndex[N-1]);
+                
+            }
+            Console.ReadLine();
+        }
+
+        // This is the main function that takes a string 'txt' of size n as an
+        // argument, builds and return the suffix array for the given string
+        static int[] buildSuffixArray(string txt, int n)
+        {
+            // A structure to store suffixes and their indexes
+            suffix[] suffixes = new suffix[n];
+
+            // Store suffixes and their indexes in an array of structures.
+            // The structure is needed to sort the suffixes alphabatically
+            // and maintain their old indexes while sorting
+            for (int i = 0; i < n; i++)
+            {
+                suffixes[i] = new suffix();
+                suffixes[i].index = i;
+                suffixes[i].rank[0] = txt[i] - 'a';
+                suffixes[i].rank[1] = ((i + 1) < n) ? (txt[i + 1] - 'a') : -1;
+            }
+
+            // Sort the suffixes using the comparison function
+            // defined above.
+            Array.Sort(suffixes);
+
+            // At his point, all suffixes are sorted according to first
+            // 2 characters.  Let us sort suffixes according to first 4
+            // characters, then first 8 and so on
+            int[] ind = new int[n];  // This array is needed to get the index in suffixes[]
+            // from original index.  This mapping is needed to get
+            // next suffix.
+            for (int k = 4; k < 2 * n; k = k * 2)
+            {
+                // Assigning rank and index values to first suffix
+                int rank = 0;
+                int prev_rank = suffixes[0].rank[0];
+                suffixes[0].rank[0] = rank;
+                ind[suffixes[0].index] = 0;
+
+                // Assigning rank to suffixes
+                for (int i = 1; i < n; i++)
+                {
+                    // If first rank and next ranks are same as that of previous
+                    // suffix in array, assign the same new rank to this suffix
+                    if (suffixes[i].rank[0] == prev_rank &&
+                            suffixes[i].rank[1] == suffixes[i - 1].rank[1])
+                    {
+                        prev_rank = suffixes[i].rank[0];
+                        suffixes[i].rank[0] = rank;
+                    }
+                    else // Otherwise increment rank and assign
+                    {
+                        prev_rank = suffixes[i].rank[0];
+                        suffixes[i].rank[0] = ++rank;
+                    }
+                    ind[suffixes[i].index] = i;
+                }
+
+                // Assign next rank to every suffix
+                for (int i = 0; i < n; i++)
+                {
+                    int nextindex = suffixes[i].index + k / 2;
+                    suffixes[i].rank[1] = (nextindex < n) ?
+                                          suffixes[ind[nextindex]].rank[0] : -1;
+                }
+
+                // Sort the suffixes according to first k characters
+                Array.Sort(suffixes);
+            }
+
+            // Store indexes of all sorted suffixes in the suffix array
+            int[] suffixArr = new int[n];
+            for (int i = 0; i < n; i++)
+                suffixArr[i] = suffixes[i].index;
+
+            // Return the suffix array
+            return suffixArr;
+        }
+
+        /* To construct and return LCP */
+        static int[] kasai(string txt, int[] suffixArr)
+        {
+            int n = suffixArr.Length;
+
+            // To store LCP array
+            int[] lcp = new int[n];
+
+            // An auxiliary array to store inverse of suffix array
+            // elements. For example if suffixArr[0] is 5, the
+            // invSuff[5] would store 0.  This is used to get next
+            // suffix string from suffix array.
+            int[] invSuff = new int[n];
+
+
+            // Fill values in invSuff[]
+            for (int i = 0; i < n; i++)
+                invSuff[suffixArr[i]] = i;
+
+            // Initialize length of previous LCP
+            int k = 0;
+
+            // Process all suffixes one by one starting from
+            // first suffix in txt[]
+            for (int i = 0; i < n; i++)
+            {
+                /* If the current suffix is at n-1, then we don’t
+                   have next substring to consider. So lcp is not
+                   defined for this substring, we put zero. */
+                if (invSuff[i] == n - 1)
+                {
+                    k = 0;
+                    continue;
+                }
+
+                /* j contains index of the next substring to
+                   be considered  to compare with the present
+                   substring, i.e., next string in suffix array */
+                int j = suffixArr[invSuff[i] + 1];
+
+                // Directly start matching from k'th index as
+                // at-least k-1 characters will match
+                while (i + k < n && j + k < n && txt[i + k] == txt[j + k])
+                    k++;
+
+                lcp[invSuff[i]] = k; // lcp for the present suffix.
+
+                // Deleting the starting character from the string.
+                if (k > 0)
+                    k--;
+            }
+
+            // return the constructed lcp array
+            return lcp;
+        }
+    }
+}
