@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+    class Program
+    {
+       
+        static void Main(string[] args)
+        {
+            int _ar_size = Convert.ToInt32(Console.ReadLine());
+            int[] split_elements = Array.ConvertAll(Console.ReadLine().Split(' '), int.Parse);
+            int[] temp = new int[_ar_size];
+            int[] Rev = new int[_ar_size];
+
+            Boolean[] used = new Boolean[_ar_size];
+            var p = new int[_ar_size];
+
+            for (int i = 0; i < _ar_size; i++)
+            {
+                used[i] = false;
+                p[i] = i;
+            }
+
+
+
+            Array.Sort(p, (x, y) => split_elements[x].CompareTo(split_elements[y]));
+
+            int ans = 0;
+            int cur = 0;
+            for (int i = 0; i < _ar_size; ++i)
+            {
+                int x = i;
+                if (used[x])
+                    continue;
+                while (!used[x])
+                {
+                    used[x] = true;
+                    x = p[x];
+                }
+                cur++;
+            }
+            ans = _ar_size - cur;
+
+            int result = 0;
+            for (int i = 0; i < _ar_size; i++)
+            {
+                used[i] = false;
+            }
+
+            cur = 0;
+            var pRev = p.Reverse().ToArray();
+            for (int i = 0; i < _ar_size; ++i)
+            {
+                int x = i;
+                if (used[x])
+                    continue;
+                while (!used[x])
+                {
+                    used[x] = true;
+                    x = pRev[x];
+                }
+                cur++;
+            }
+            result = _ar_size - cur;
+            int answer = Math.Min(result, ans);
+
+            Console.WriteLine(answer);
+            Console.ReadLine();
+        }
+    }
