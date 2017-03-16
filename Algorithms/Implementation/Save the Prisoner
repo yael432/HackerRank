@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int nCases = int.Parse(Console.ReadLine());
+            int[] outputSummary = new int[nCases];
+
+            for (int nCase = 0; nCase < nCases; nCase++)
+            {
+                int[] myInts = Array.ConvertAll(Console.ReadLine().Split(' '), s => int.Parse(s));
+                int arrLength = myInts[0];
+                int steps = myInts[1]-1;
+                int startIndex = myInts[2] - 1;
+
+                steps = steps%arrLength;
+
+                int poisenIndex;
+
+                if (steps + startIndex > arrLength -1)
+                {
+                    poisenIndex = steps + startIndex - arrLength;
+                    
+                }
+                else
+                {
+                    poisenIndex = startIndex + steps;
+                    
+                }
+                poisenIndex++;
+                
+                outputSummary[nCase] = poisenIndex;
+            }
+
+            for (int nCase = 0; nCase < nCases; nCase++)
+            {
+                Console.WriteLine(outputSummary[nCase]);
+            }
+
+            Console.ReadLine();
+        }
+
+            
+        
+    }
+
