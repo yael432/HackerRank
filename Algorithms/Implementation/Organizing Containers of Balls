@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Organizing_Containers_of_Balls
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int q = Convert.ToInt32(Console.ReadLine());
+            for (int a0 = 0; a0 < q; a0++)
+            {
+                int n = Convert.ToInt32(Console.ReadLine());
+                int[][] M = new int[n][];
+                for (int M_i = 0; M_i < n; M_i++)
+                {
+                    string[] M_temp = Console.ReadLine().Split(' ');
+                    M[M_i] = Array.ConvertAll(M_temp, Int32.Parse);
+                }
+                // your code goes here
+
+                //sum by type and by container
+                long[] sumByType = new long[n];
+                long[] sumByCont = new long[n];
+                for (int i = 0; i < M.Length; i++) //row
+                {
+                    for (int j = 0; j < M[i].Length; j++) //col
+                    {
+                        sumByCont[i] += M[i][j];
+                        sumByType[j] += M[i][j];
+                    }
+                }
+
+                //t for ball type
+                string ans = "Possible";
+                for (int t = 0; t < n; t++)
+                {
+                    //c for container
+                    Boolean solutionForTypeFound = false;
+                    for (int c = 0; c < n; c++)
+                    {
+                        long numberOfBalls = M[c][t];
+                        long remainingBallsInContainer = sumByCont[c] - numberOfBalls;
+                        long remainingBallsByType = sumByType[t] - numberOfBalls;
+
+                        if (remainingBallsInContainer == remainingBallsByType)
+                        {
+                            solutionForTypeFound = true;
+                            break;
+                        }
+                    }
+
+                    if(!solutionForTypeFound)
+                    {
+                        ans = "Impossible";
+                        break;
+                    }
+                }
+
+                Console.WriteLine(ans);
+            }
+        }
+    }
+}
