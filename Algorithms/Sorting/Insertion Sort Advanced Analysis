@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+class Solution
+{
+    static long totalSwaps = 0;
+
+    static public void DoMerge(int [] numbers,int [] temp, int left, int mid, int right)
+        {
+            
+            int i, left_end, num_elements, tmp_pos,right_steps=0;
+        
+            left_end = (mid - 1);
+            tmp_pos = left;
+            num_elements = (right - left + 1);
+        
+            while ((left <= left_end) && (mid <= right))
+            {
+                if (numbers[left] <= numbers[mid])
+                    {
+                    temp[tmp_pos++] = numbers[left++];
+                    totalSwaps += right_steps;
+                }
+                    
+                else
+                    {
+                    temp[tmp_pos++] = numbers[mid++];
+                    right_steps++;
+                }
+                    
+            }
+        
+            while (left <= left_end)
+                {
+                temp[tmp_pos++] = numbers[left++];
+                totalSwaps += right_steps;
+            }
+                
+                
+            while (mid <= right)
+                temp[tmp_pos++] = numbers[mid++];
+ 
+        }
+ 
+        static public void MergeSort_Recursive(int [] numbers,int [] temp, int left, int right)
+        {
+          int mid;
+        
+          if (right > left)
+          {
+            mid = (right + left) / 2;
+            MergeSort_Recursive(temp,numbers, left, mid);
+            MergeSort_Recursive(temp,numbers, (mid + 1), right);
+            
+            DoMerge(numbers,temp, left, (mid+1), right);
+          }
+        }
+    /* Tail starts here */
+    static void Main(String[] args)
+    {
+
+        
+        int nCases = Convert.ToInt32(Console.ReadLine());
+        
+        
+        for (int nCase = 0; nCase < nCases; nCase++)
+        {
+            totalSwaps= 0;
+            int _ar_size = Convert.ToInt32(Console.ReadLine());
+            int[] split_elements =Array.ConvertAll(Console.ReadLine().Split(' '), int.Parse) ;
+            int[] temp = new int[split_elements.Length];
+            Array.Copy(split_elements, temp, split_elements.Length);
+            MergeSort_Recursive(split_elements,temp, 0, _ar_size - 1);
+           Console.WriteLine(totalSwaps); 
+        }
+
+    }
+}
