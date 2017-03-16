@@ -1,0 +1,168 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AlmostSorted
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int arrSize = int.Parse(Console.ReadLine());
+
+            int[] arr = Array.ConvertAll(Console.ReadLine().Split(' '), int.Parse);
+            bool isSolutionAvailable = true;
+
+            int upDownFirstIndex = -1;
+
+            int downUpFirstIndex = -1;
+            int downDownCounting = 0;
+            string strOut = "";
+
+           
+
+            
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+
+                if (i == 0)
+                {
+                    if (arr[i] > arr[i + 1])
+                    {
+                        upDownFirstIndex = i;
+                    }
+                }
+                else if (i == arr.Length - 1)
+                {
+                    if (arr[i - 1] > arr[i])
+                    {
+                        
+                        downUpFirstIndex = i;
+
+                    }
+                }
+                else
+                {
+                    if (arr[i - 1] < arr[i] && arr[i] > arr[i + 1])
+                    {
+                        if (upDownFirstIndex >= 0)
+                        {
+                            //isSolutionAvailable = false;
+                            //break;
+                        }
+                        else
+                        {
+                            upDownFirstIndex = i;
+                        }
+
+                    }
+
+                    if (arr[i - 1] > arr[i] && arr[i] < arr[i + 1])
+                    {
+                        
+                        downUpFirstIndex = i;
+                        
+                    }
+
+                    if (arr[i - 1] > arr[i] && arr[i] > arr[i + 1])
+                    {
+
+                        downDownCounting++;
+
+                    }
+                }
+
+                if (downUpFirstIndex >= 0 && upDownFirstIndex >= 0)
+                {
+
+                    if (upDownFirstIndex > 0)
+                    {
+                        if (arr[downUpFirstIndex] < arr[upDownFirstIndex - 1])
+                        {
+                            downUpFirstIndex = -1;
+                            downDownCounting = 0;
+                        }
+                    }
+
+                    if (upDownFirstIndex < arr.Length - 1)
+                    {
+                        if (downUpFirstIndex >0)
+                        {
+                            if (arr[downUpFirstIndex] > arr[upDownFirstIndex + 1])
+                            {
+                                downUpFirstIndex = -1;
+                                downDownCounting = 0;
+                            }
+                        }
+                        
+                    }
+                    
+
+                    if (downUpFirstIndex < arr.Length - 1)
+                    {
+                        if (arr[downUpFirstIndex + 1] < arr[upDownFirstIndex])
+                        {
+                            downUpFirstIndex = -1;
+                            downDownCounting = 0;
+                        }
+                    }
+
+                    if (downUpFirstIndex > 0)
+                    {
+                        if (arr[downUpFirstIndex - 1] > arr[upDownFirstIndex])
+                        {
+                            downUpFirstIndex = -1;
+                            downDownCounting = 0;
+                        }
+                    }
+                    
+
+                    //if is swap or reverse
+                    if (downUpFirstIndex >= 0 && upDownFirstIndex >=0)
+                    {
+                        if (downUpFirstIndex - upDownFirstIndex-1 == downDownCounting)
+                        {
+                            if (downUpFirstIndex - upDownFirstIndex == 1)
+                            {
+                                strOut = "swap " + (upDownFirstIndex + 1).ToString() + " " + (downUpFirstIndex + 1).ToString();
+                            }
+                            else
+                            {
+                                strOut = "reverse " + (upDownFirstIndex + 1).ToString() + " " + (downUpFirstIndex + 1).ToString();
+                            }
+                            
+                        }
+                        else
+                        {
+                            strOut = "swap " + (upDownFirstIndex + 1).ToString() + " " + (downUpFirstIndex + 1).ToString();
+                        }
+                    }
+                    
+                }
+
+            }
+
+
+            if (downUpFirstIndex < 0 || upDownFirstIndex < 0)
+            {
+                isSolutionAvailable = false;
+            }
+
+            if (isSolutionAvailable)
+            {
+                Console.WriteLine("yes");
+                Console.WriteLine(strOut);
+            }
+            else
+            {
+                Console.WriteLine("no");
+            }
+
+            Console.ReadLine();
+
+        }
+    }
+}
