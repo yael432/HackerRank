@@ -1,0 +1,194 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TheBombermanGame
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] inputData = Console.ReadLine().Split(' ');
+            int rows = int.Parse(inputData[0]);
+            int cols = int.Parse(inputData[1]);
+            int seconds = int.Parse(inputData[2]);
+
+            char[][] oneSecondGrid = new char[rows][];
+            char[][] twoSecondGrid = new char[rows][];
+            char[][] threeSecondGrid = new char[rows][];
+            char[][] fourSecondGrid = new char[rows][];
+
+            for (int row = 0; row < rows; row++)
+            {
+                oneSecondGrid[row] = Console.ReadLine().ToCharArray();
+            }
+
+            //defined two second grid state and 3 seconds grid state
+            for (int row = 0; row < rows; row++)
+            {
+                twoSecondGrid[row] = new char[cols];
+                threeSecondGrid[row] = new char[cols];
+
+                for (int col = 0; col < cols; col++)
+                {
+                    //oneSecondGrid[row] = Console.ReadLine().ToCharArray();
+                    twoSecondGrid[row][col] = 'O';
+
+                    bool isPointDetonate = false;
+
+                    if(oneSecondGrid[row][col]=='O')
+                    {
+                        isPointDetonate = true;
+                    }
+                    else
+                    {
+
+                        if (row > 0)
+                        {
+                            if (oneSecondGrid[row - 1][col] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                        if (row < rows - 1)
+                        {
+                            if (oneSecondGrid[row + 1][col] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                        if (col > 0)
+                        {
+                            if (oneSecondGrid[row][col - 1] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                        if (col < cols - 1)
+                        {
+                            if (oneSecondGrid[row][col + 1] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                    }
+                    if(isPointDetonate)
+                    {
+                        threeSecondGrid[row][col] = '.';
+                    }
+                    else
+                    {
+                        threeSecondGrid[row][col] = 'O';
+                    }
+                }
+
+                
+            }
+
+            
+            //defined two second grid state and 3 seconds grid state
+            for (int row = 0; row < rows; row++)
+            {
+
+                fourSecondGrid[row] = new char[cols];
+
+                for (int col = 0; col < cols; col++)
+                {
+
+                    bool isPointDetonate = false;
+
+                    if (threeSecondGrid[row][col] == 'O')
+                    {
+                        isPointDetonate = true;
+                    }
+                    else
+                    {
+
+                        if (row > 0)
+                        {
+                            if (threeSecondGrid[row - 1][col] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                        if (row < rows - 1)
+                        {
+                            if (threeSecondGrid[row + 1][col] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                        if (col > 0)
+                        {
+                            if (threeSecondGrid[row][col - 1] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                        if (col < cols - 1)
+                        {
+                            if (threeSecondGrid[row][col + 1] == 'O')
+                            {
+                                isPointDetonate = true;
+                            }
+                        }
+
+                    }
+                    if (isPointDetonate)
+                    {
+                        fourSecondGrid[row][col] = '.';
+                    }
+                    else
+                    {
+                        fourSecondGrid[row][col] = 'O';
+                    }
+                }
+            }
+
+            if(seconds%2==0)
+            {
+                OutputCharArr(twoSecondGrid);
+            }
+            else
+            {
+                if (seconds==1)
+                {
+                    OutputCharArr(oneSecondGrid);
+                }
+                else if(seconds%4==1)
+                {
+                    OutputCharArr(fourSecondGrid);
+                }
+                else
+                {
+                    OutputCharArr(threeSecondGrid);
+                }
+                
+            }
+
+            Console.ReadLine();
+        }
+
+        static void OutputCharArr(char[][] arrToWrite)
+        {
+            for (int row = 0; row < arrToWrite.Length; row++)
+            {
+                for (int col = 0; col < arrToWrite[row].Length; col++)
+                {
+                    Console.Write(string.Format("{0}", arrToWrite[row][col]));
+                }
+                Console.WriteLine();
+            }
+            
+        }
+    }
+}
