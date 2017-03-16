@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+class Solution
+{
+
+    
+    static void Main(String[] args)
+    {
+
+        int[] basicData = Array.ConvertAll(Console.ReadLine().Split(' '), int.Parse);
+        int arrSize = basicData[0];
+        int daysForMedian = basicData[1];
+        int notificationCounter = 0;
+        int[] expands =  Array.ConvertAll(Console.ReadLine().Split(' '), int.Parse);
+        int[] expandsAmounts = new int[201];
+        //first sort 
+
+        
+        for (int day = 0; day < expands.Length; day++)
+        {
+            int currentExpand = expands[day];
+            
+            
+            if(day >= daysForMedian)
+            {
+                //remove previous
+                if (day >= daysForMedian + 1)
+                {
+                    int preExpand = expands[day - daysForMedian - 1];
+                    expandsAmounts[preExpand]--;
+
+                }
+                //calc median
+                double median = Median(expandsAmounts, daysForMedian);
+                //check for notification
+                if(currentExpand >= median*2)
+                {
+                    notificationCounter++;
+                }
+                
+            }
+
+            expandsAmounts[currentExpand]++;
+        }
+
+        Console.WriteLine(notificationCounter);
+    }
+
+    static double Median(int[] ar, int daysForMedian)
+    {
+        double median = 0;
+        int midPoint;
+        if (daysForMedian % 2 == 1)
+        {
+            midPoint = daysForMedian / 2 + 1;
+        }
+        else
+        {
+            midPoint = daysForMedian / 2;
+        }
+        
+
+        int tempTotal = 0;
+        for (int i = 0; i < ar.Length; i++)
+        {
+            tempTotal += ar[i];
+            if (tempTotal == midPoint)
+            {
+                if (daysForMedian %2==0)
+                {
+                    int j = i + 1;
+                    while(ar[j]==0)
+                    {
+                        j++;
+                    }
+                    median = ((double)i + (double)j) / 2;
+                }
+                else
+                {
+                    median = i;
+                }
+                break;
+            }
+            else if(tempTotal > midPoint)
+            {
+                median = i;
+                break;
+            }
+        }
+        
+        return median;
+    }
+}
