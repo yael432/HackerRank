@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+class Solution {
+    static void Main(String[] args) {
+         string[] tokens_a0 = Console.ReadLine().Split(' ');
+            int n = Convert.ToInt32(tokens_a0[0]);
+            int k = Convert.ToInt32(tokens_a0[1]);
+            int q = Convert.ToInt32(tokens_a0[2]);
+
+            string[] arr_temp = Console.ReadLine().Split(' ');
+            int[] arr = Array.ConvertAll(arr_temp, Int32.Parse);
+
+            int indexMoves = k % n;
+
+            int[] new_arr = new int[arr.Length];
+
+            int newIndex;
+
+            for (int index = 0; index < n;index++)
+            {
+                
+                if (index + indexMoves > n-1)
+                {
+                    newIndex = index + indexMoves - n;
+                }
+                else
+                {
+                    newIndex = index + indexMoves;
+                }
+
+                new_arr[newIndex] = arr[index];
+            }
+
+            int[] mIndex = new int[q];
+
+            for (int querie = 0; querie < q;querie++ )
+            {
+                mIndex[querie] = Convert.ToInt32(Console.ReadLine());
+
+            }
+
+            for (int querie = 0; querie < q; querie++)
+            {
+
+                Console.WriteLine(new_arr[mIndex[querie]]);
+            }
+    }
+}
