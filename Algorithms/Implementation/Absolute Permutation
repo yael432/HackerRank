@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AbsolutePermutation
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int t = Convert.ToInt32(Console.ReadLine());
+            for (int a0 = 0; a0 < t; a0++)
+            {
+                string[] tokens_n = Console.ReadLine().Split(' ');
+                int n = Convert.ToInt32(tokens_n[0]);
+                int k = Convert.ToInt32(tokens_n[1]);
+
+                int[] p = new int[n+1];
+
+                if (k==0)
+                {
+                    for (int i = 1; i <= n; i++)
+                    {
+                        if (i<n)
+                        {
+                            Console.Write("{0} ", i);
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0}", i);
+                        }
+                        
+                    }
+                    
+                }
+                else
+                {
+                    if (n%(2*k)==0)
+                    {
+                        int tempIndex = 0;
+
+                        do
+                        {
+                            for (int i = 0; i < k; i++)
+                            {
+                                p[tempIndex + i + 1] = tempIndex + i + k + 1;
+                                p[tempIndex + i + k + 1] = tempIndex + i + 1;
+                            }
+
+                            tempIndex += 2 * k;
+ 
+                        } while (tempIndex < n);
+
+                        for (int i = 1; i <= n; i++)
+                        {
+                            if (i < n)
+                            {
+                                Console.Write("{0} ", p[i]);
+                            }
+                            else
+                            {
+                                Console.WriteLine("{0}", p[i]);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(-1);
+                    }
+                }
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
