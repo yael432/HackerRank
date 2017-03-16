@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Sherlock_and_Valid_String
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string inputStr = Console.ReadLine();
+
+            char[] strChrs = inputStr.ToCharArray();
+            var groups = strChrs.GroupBy(v => v).OrderBy(v => v.Count());
+
+            if (groups.Count() == 1)
+            {
+                Console.WriteLine("YES");
+            }
+            else if (groups.First().Count() == 1 & groups.Last().Count() - groups.ElementAt(1).Count()==0)
+            {
+                Console.WriteLine("YES");
+            }
+            else if (groups.Last().Count() - groups.First().Count() > 1)
+            {
+                
+                Console.WriteLine("NO");
+
+            }
+            else
+            {
+                int chrCounter = groups.First().Count();
+                int index = 0;
+                foreach (var item in groups)
+                {
+                    if (item.Count() != chrCounter)
+                    {
+                        break;
+                    }
+                    index++;
+                }
+
+                // break on last element: index = groups.Count()-1
+                // no break: index = groups.Count()
+                if (index < groups.Count()-1)
+                {
+                    Console.WriteLine("NO");
+                }
+                else
+                {
+                    Console.WriteLine("YES");
+                }
+            }
+        }
+    }
+}
