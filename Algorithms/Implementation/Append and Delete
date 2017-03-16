@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = Console.ReadLine();
+            string t = Console.ReadLine();
+            int k = Convert.ToInt32(Console.ReadLine());
+
+            Boolean iskOK = true;
+
+            while (k>0)
+            {
+                if (s.Length == 0 & t.Length ==0)
+                {
+                    k--;
+                }
+                else
+                {
+                    if (s.Length > t.Length)
+                    {
+                        s = s.Substring(0, s.Length - 1);
+                        k--;
+
+                    }
+                    else if (s.Length < t.Length)
+                    {
+                        t = t.Substring(0, t.Length - 1);
+                        k--;
+                    }
+                    else
+                    {
+
+                        s = s.Substring(0, s.Length - 1);
+                        t = t.Substring(0, t.Length - 1);
+                        k-=2;
+                    }
+                }
+                
+            }
+
+
+            if (s==t)
+            {
+                if (k<0)
+                {
+                    Console.WriteLine("No");
+                }
+                else
+                {
+                    Console.WriteLine("Yes");
+                }
+                
+            }
+            else
+            {
+                Console.WriteLine("No");
+            }
+        }
+    }
+
