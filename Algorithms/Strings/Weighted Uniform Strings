@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Weighted_Uniform_Strings
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = Console.ReadLine();
+
+            int[] weightedSum = new int[s.Length];
+            for (int i = 0; i < s.Length; i++)
+            {
+                int index = (int)s[i] % 32;
+                if (i==0)
+                {
+                    weightedSum[0] = index;
+                }
+                else
+                {
+                    
+                    weightedSum[i] = (s[i] == s[i - 1]) ? weightedSum[i - 1] + index : index;
+                }
+            }
+
+            var hs = new HashSet<int>();
+            for (int i = 0; i < weightedSum.Length; i++)
+            {
+                hs.Add(weightedSum[i]);
+            }
+            int n = Convert.ToInt32(Console.ReadLine());
+            for (int a0 = 0; a0 < n; a0++)
+            {
+                int x = Convert.ToInt32(Console.ReadLine());
+                // your code goes here
+
+                if (hs.Contains(x))
+                {
+                    Console.WriteLine("Yes");
+                }
+                else
+                {
+                    Console.WriteLine("No");
+                }
+            }
+        }
+    }
+}
