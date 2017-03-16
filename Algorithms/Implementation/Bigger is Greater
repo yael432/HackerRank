@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BiggerisGreater
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int queries = Convert.ToInt32(Console.ReadLine());
+
+            string[] summaryOutput = new string[queries];
+
+            char[] inputArr, sortInputArr;
+            List<char> partialChars;
+
+            char minChar,currentMaxChar,tempChar;
+            //int nonMinLastCharIndex;
+
+            for (int querie = 0; querie < queries; querie++)
+            {
+                inputArr = Console.ReadLine().ToCharArray();
+
+                sortInputArr = new Char[inputArr.Length];
+
+                Array.Copy(inputArr, sortInputArr, inputArr.Length);
+
+                Array.Sort(sortInputArr);
+                Array.Reverse(sortInputArr);
+
+                partialChars = new List<char>();
+
+                minChar = sortInputArr[sortInputArr.Length - 1];
+                if (!inputArr.SequenceEqual(sortInputArr))
+                {
+                    //nonMinLastCharIndex = inputArr.Length - 1;
+
+                    partialChars.Add(inputArr[inputArr.Length - 1]);
+
+                    for (int i = inputArr.Length -2; i >= 0; i--)
+                    {
+
+                        currentMaxChar = partialChars[partialChars.Count-1];
+
+                        if (inputArr[i] < currentMaxChar)
+                        {
+                            for (int partialCharsIndex = 0; partialCharsIndex < partialChars.Count; partialCharsIndex++)
+                            {
+                                if (inputArr[i] < partialChars[partialCharsIndex])
+                                {
+                                    tempChar = inputArr[i];
+                                    inputArr[i] = partialChars[partialCharsIndex];
+                                    partialChars[partialCharsIndex] = tempChar;
+                                    break;
+                                }
+                                
+                                
+                            }
+                            partialChars.Sort((a, b) => a.CompareTo(b));
+                            break;
+                        }
+                        else
+                        {
+                            partialChars.Add(inputArr[i]);
+                            partialChars.Sort((a, b) => a.CompareTo(b));
+                        }
+                    }
+
+                    int inpuArrIndex;
+
+                    for (int i = 0; i < partialChars.Count; i++)
+                    {
+                        inpuArrIndex = inputArr.Length - partialChars.Count + i;
+
+                        inputArr[inpuArrIndex] = partialChars[i];
+                    }
+
+                    summaryOutput[querie] = new string(inputArr);
+                }
+                else
+                {
+                    summaryOutput[querie] = "no answer";
+                }
+
+
+            }
+
+            for (int querie = 0; querie < queries; querie++)
+            {
+                Console.WriteLine(summaryOutput[querie]);
+            }
+
+            //Console.ReadLine();
+        }
+    }
+}
