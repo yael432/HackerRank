@@ -1,3 +1,3 @@
 # HackerRank
 
-C# HackerRank solutions
+C# and python HackerRank solutions
